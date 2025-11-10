@@ -1,0 +1,15 @@
+# Fichiers d'environnement
+.env
+# Fichiers Python compilés
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+# Logs
+*.log
+# Node.js / Angular
+node_modules/
+dist/
+build/
+# Cache Angular
+.angular/
