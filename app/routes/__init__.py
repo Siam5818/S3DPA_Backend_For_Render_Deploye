@@ -5,7 +5,8 @@ from app.routes import (
     patient_routes,
     proche_routes,
     alerte_routes,
-    donnees_medicales_route
+    donnees_medicales_route,
+    analyse_route,
 )
 
 def register_routes(app):
@@ -16,4 +17,5 @@ def register_routes(app):
     app.register_blueprint(proche_routes.proche_bp)
     app.register_blueprint(alerte_routes.alerte_bp)
     app.register_blueprint(donnees_medicales_route.donnees_bp)
+    app.register_blueprint(analyse_route.analyse_bp)
     
