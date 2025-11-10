@@ -70,8 +70,8 @@ class Config:
     # Déterminer l'URL dynamique
     PRIMARY_URL = os.getenv("RENDER_EXTERNAL_URL", f"http://{FLASK_RUN_HOST}:{FLASK_RUN_PORT}")
 
-    print(f"Backend de S3DPA vient d'être démarré en mode {ENV} sur {PRIMARY_URL}")
-    print(f"Voici l'Url de la documentation Swagger --> {PRIMARY_URL}/apidocs")
+    #print(f"Backend de S3DPA vient d'être démarré en mode {ENV} sur {PRIMARY_URL}")
+    #print(f"Voici l'Url de la documentation Swagger --> {PRIMARY_URL}/apidocs")
 
 
 
