@@ -7,7 +7,7 @@ app = create_app()
 
 with app.app_context():
     # Création des utilisateurs
-    medecin = Medecin(
+    '''medecin = Medecin(
         nom="Anzize",
         prenom="Mohamed",
         email="anzize@gmedical.sn",
@@ -16,6 +16,18 @@ with app.app_context():
         role="medecin",
         date_naissance="2000-12-28",
         specialite="Cardiologie",
+        adresse="Dakar"
+    )'''
+
+    medecin = Medecin(
+        nom="Aichatou",
+        prenom="Djamila",
+        email="adjamila@gmedical.sn",
+        phone="780000002",
+        mot_de_passe=bcrypt.generate_password_hash("Passer123").decode("utf-8"),
+        role="medecin",
+        date_naissance="2002-02-28",
+        specialite="Pediatre",
         adresse="Dakar"
     )
 
@@ -65,7 +77,7 @@ with app.app_context():
     )
 
     # Insertion dans la base
-    db.session.add_all(donnees + [alerte])
+    db.session.add(medecin)
     db.session.commit()
 
     print("Utilisateurs insérés avec succès")
