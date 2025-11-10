@@ -64,10 +64,10 @@ def serialize_patient(p):
         **serialize_personne(p),
         "donnees_phys": [serialize_donnee_medicale(d) for d in getattr(p, "donnees_phys", [])],
         "derniere_mesure": (
-            serialize_donnee_medicale(
-                sorted(p.donnees_phys, key=lambda d: d.date_heure_mesure, reverse=True)[0]
-            )
-            if getattr(p, "donnees_phys", [])
+        serialize_donnee_medicale(
+            sorted(p.donnees_phys, key=lambda d: d.date_heure_mesure, reverse=True)[0]
+        )
+        if getattr(p, "donnees_phys", [])
             else None
         ),
         "proches": [serialize_proche(pr) for pr in getattr(p, "proches", [])],
@@ -130,7 +130,7 @@ def serialize_capteur(c):
 # -------------------------------------------------------------
 # Sérialiseur du modèle DonneesMedicale
 # -------------------------------------------------------------
-def serialize_donnee_medicale(m):
+def serialize_donnee_medicale(m, with_patient=False):
     """Sérialise une donnée médicale captée par un capteur."""
     if not m:
         return None
@@ -146,8 +146,14 @@ def serialize_donnee_medicale(m):
             else None
         ),
         "capteur": serialize_capteur(m.capteur) if getattr(m, "capteur", None) else None,
-        "patient": serialize_patient(m.patient) if getattr(m, "patient", None) else None
+        # on évite la récursion infinie ici :
+        "patient": {
+            "id": m.patient.id,
+            "nom": m.patient.nom,
+            "prenom": m.patient.prenom,
+        } if with_patient and getattr(m, "patient", None) else None,
     }
+
 
 
 # -------------------------------------------------------------
