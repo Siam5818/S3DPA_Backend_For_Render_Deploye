@@ -61,12 +61,18 @@ class Config:
     )
 
     # Environnement Flask
+    # Environnement Flask
     DEBUG = strtobool(os.getenv('FLASK_DEBUG', 'False'))
     ENV = os.getenv('FLASK_ENV', 'production')
     FLASK_RUN_HOST = os.getenv("FLASK_RUN_HOST", "127.0.0.1")
     FLASK_RUN_PORT = int(os.getenv("FLASK_RUN_PORT", "5000"))
-    print(f"Backend de S3DPA vient d'etre demarré en mode {ENV} sur http://{FLASK_RUN_HOST}:{FLASK_RUN_PORT}")
-    print(f"Voici l'Url de la documentation Swagger --> http://{FLASK_RUN_HOST}:{FLASK_RUN_PORT}/apidocs")
+
+    # Déterminer l'URL dynamique
+    PRIMARY_URL = os.getenv("RENDER_EXTERNAL_URL", f"http://{FLASK_RUN_HOST}:{FLASK_RUN_PORT}")
+
+    print(f"Backend de S3DPA vient d'être démarré en mode {ENV} sur {PRIMARY_URL}")
+    print(f"Voici l'Url de la documentation Swagger --> {PRIMARY_URL}/apidocs")
+
 
 
 # Configuration spécifique au développement
