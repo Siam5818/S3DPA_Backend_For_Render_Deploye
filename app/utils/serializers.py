@@ -186,7 +186,7 @@ def serialize_analyse(a):
             "valeur_mesuree": a.donnee_medicale.valeur_mesuree,
             "capteur": {
                 "id": a.donnee_medicale.capteur.id,
-                "nom": a.donnee_medicale.capteur.nom
+                "type": a.donnee_medicale.capteur.type
             }
         } if getattr(a, "donnee_medicale", None) else None,
     }

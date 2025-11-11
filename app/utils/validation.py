@@ -7,4 +7,3 @@ def validate_fields(data, required_fields):
     """
     return all(field in data and data[field].strip() != "" for field in required_fields)
 
-
