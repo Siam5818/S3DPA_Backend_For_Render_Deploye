@@ -155,7 +155,6 @@ def serialize_donnee_medicale(m, with_patient=False):
     }
 
 
-
 # -------------------------------------------------------------
 # Sérialiseur du modèle Analyseur
 # -------------------------------------------------------------
