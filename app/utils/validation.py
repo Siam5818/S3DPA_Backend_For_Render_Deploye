@@ -1,31 +1,10 @@
 def validate_fields(data, required_fields):
     """
     Vérifie que tous les champs requis sont présents et non vides.
-    Compatible avec les types str, int, float, bool.
+    :param data: dictionnaire (ex: request.form ou request.json)
+    :param required_fields: liste des clés attendues
+    :return: True si tous les champs sont valides, False sinon
     """
-    if not isinstance(data, dict):
-        return False
+    return all(field in data and data[field].strip() != "" for field in required_fields)
 
-    for field in required_fields:
-        if field not in data:
-            return False
 
-        value = data[field]
-
-        # Cas None
-        if value is None:
-            return False
-
-        # Cas string vide
-        if isinstance(value, str) and not value.strip():
-            return False
-
-        # Cas numérique : on accepte 0, mais pas un champ absent
-        if isinstance(value, (int, float)) and str(value).strip() == "":
-            return False
-
-        # Cas booléen : False est accepté, mais pas None
-        if isinstance(value, bool):
-            continue
-
-    return True
