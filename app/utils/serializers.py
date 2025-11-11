@@ -195,7 +195,7 @@ def serialize_statistique(stat):
     capteur = Capteur.query.get(stat[0]) if stat else None
 
     return {
-        "type": capteur.type.value if capteur else None,
+        "type": safe_enum(capteur.type) if capteur else None,
         "min": stat[1],
         "max": stat[2],
         "avg": round(stat[3], 2) if stat[3] is not None else None,
