@@ -25,9 +25,7 @@ def serialize_personne(p):
         "email": p.email,
         "phone": getattr(p, "phone", None),
         "adresse": getattr(p, "adresse", None),
-        "date_naissance": (
-            p.date_naissance.isoformat() if getattr(p, "date_naissance", None) else None
-        ),
+        "date_naissance": safe_date(getattr(p, "date_naissance", None)),
         "role": getattr(p, "role", None),
     }
 
@@ -102,13 +100,11 @@ def serialize_alerte(a):
 
     return {
         "id": a.id,
-        "niveau_urgence": a.niveau_urgence.value if a.niveau_urgence else None,
-        "type_alerte": a.type_alerte.value if a.type_alerte else None,
+        "niveau_urgence": safe_enum(a.niveau_urgence),
+        "type_alerte": safe_enum(a.type_alerte),
         "description": a.description,
         "etat_traitement": a.etat_traitement,
-        "date_heure_alerte": a.date_heure_alerte.isoformat()
-        if a.date_heure_alerte
-        else None,
+        "date_heure_alerte": safe_date(a.date_heure_alerte),
         "patient_id": a.patient_id,
         "medecin_id": a.medecin_id,
     }
@@ -124,7 +120,7 @@ def serialize_capteur(c):
 
     return {
         "id": c.id,
-        "type": c.type.value if c.type else None
+        "type": safe_enum(c.type)
     }
 
 # -------------------------------------------------------------
@@ -140,11 +136,7 @@ def serialize_donnee_medicale(m, with_patient=False):
         "patient_id": m.patient_id,
         "capteur_id": m.capteur_id,
         "valeur_mesuree": m.valeur_mesuree,
-        "date_heure_mesure": (
-            m.date_heure_mesure.strftime("%Y-%m-%d %H:%M")
-            if getattr(m, "date_heure_mesure", None)
-            else None
-        ),
+        "date_heure_mesure": safe_date(m.date_heure_mesure),
         "capteur": serialize_capteur(m.capteur) if getattr(m, "capteur", None) else None,
         # on évite la récursion infinie ici :
         "patient": {
@@ -166,7 +158,7 @@ def serialize_analyse(a):
     return {
         "id": a.id,
         "resultat": a.resultat,
-        "date_analyse": a.date_analyse.isoformat() if a.date_analyse else None,
+        "date_analyse": safe_date(a.date_analyse),
         "medecin_id": getattr(a, "medecin_id", None),
         "patient_id": getattr(a, "patient_id", None),
         "donnee_medicale_id": getattr(a, "donnee_medicale_id", None),
@@ -182,11 +174,11 @@ def serialize_analyse(a):
             "specialite": a.medecin.specialite,
         } if getattr(a, "medecin", None) else None,
         "donnee_medicale": {
-            "id": a.donnee_medicale.id,
+            "id": getattr(a.donnee_medicale, "id", None),
             "valeur_mesuree": a.donnee_medicale.valeur_mesuree,
             "capteur": {
                 "id": a.donnee_medicale.capteur.id,
-                "type": a.donnee_medicale.capteur.type
+                "type": safe_enum(a.donnee_medicale.capteur.type)
             }
         } if getattr(a, "donnee_medicale", None) else None,
     }
@@ -208,3 +200,15 @@ def serialize_statistique(stat):
         "max": stat[2],
         "avg": round(stat[3], 2) if stat[3] is not None else None,
     }
+
+# -------------------------------------------------------------
+# Sérialiseur sécurisé pour les énumérations
+# -------------------------------------------------------------
+def safe_enum(enum_obj):
+    return enum_obj.value if enum_obj else None
+
+# -------------------------------------------------------------
+# Sérialiseur sécurisé pour les dates
+# -------------------------------------------------------------
+def safe_date(dt):
+    return dt.isoformat() if dt else None
