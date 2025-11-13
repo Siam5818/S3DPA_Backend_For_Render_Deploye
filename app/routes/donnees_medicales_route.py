@@ -72,22 +72,43 @@ donnees_bp = Blueprint("donnees_bp", __name__, url_prefix="/v1")
 })
 def create_donnee_route():
     data = request.get_json()
-    required = ["patient_id", "capteur_id", "valeur_mesuree"]
 
-    if not validate_fields(data, required):
-        return jsonify({"error": "Champs manquants"}), 400
+    # Si c’est une liste → plusieurs mesures d’un coup
+    if isinstance(data, list):
+        saved_donnees = []
+        for item in data:
+            try:
+                donnee = create_donnee_medicale(item)
+                saved_donnees.append(serialize_donnee_medicale(donnee))
+            except Exception as e:
+                print(f"Erreur sur {item}: {e}")
+                continue
 
-    try:
-        donnee = create_donnee_medicale(data)
         return jsonify({
-            "message": "Donnée médicale enregistrée avec succès",
-            "donnee": serialize_donnee_medicale(donnee)
+            "message": f"{len(saved_donnees)} données enregistrées avec succès",
+            "donnees": saved_donnees
         }), 201
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 400
-    except Exception as e:
-        print(e)
-        return jsonify({"error": "Erreur interne du serveur"}), 500
+
+    # Sinon → une seule donnée
+    elif isinstance(data, dict):
+        required = ["patient_id", "capteur_id", "valeur_mesuree"]
+        if not validate_fields(data, required):
+            return jsonify({"error": "Champs manquants"}), 400
+
+        try:
+            donnee = create_donnee_medicale(data)
+            return jsonify({
+                "message": "Donnée médicale enregistrée avec succès",
+                "donnee": serialize_donnee_medicale(donnee)
+            }), 201
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
+        except Exception as e:
+            print(e)
+            return jsonify({"error": "Erreur interne du serveur"}), 500
+
+    else:
+        return jsonify({"error": "Format JSON invalide"}), 400
 
 
 # -------------------------------------------------------------
