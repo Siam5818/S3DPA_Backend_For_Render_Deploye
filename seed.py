@@ -7,7 +7,7 @@ app = create_app()
 
 with app.app_context():
     # Création des utilisateurs
-    '''medecin = Medecin(
+    medecin1 = Medecin(
         nom="Anzize",
         prenom="Mohamed",
         email="anzize@gmedical.sn",
@@ -17,9 +17,9 @@ with app.app_context():
         date_naissance="2000-12-28",
         specialite="Cardiologie",
         adresse="Dakar"
-    )'''
+    )
 
-    medecin = Medecin(
+    medecin2 = Medecin(
         nom="Aichatou",
         prenom="Djamila",
         email="adjamila@gmedical.sn",
@@ -60,6 +60,10 @@ with app.app_context():
             Capteur(type=TypeCapteur.pression),
             Capteur(type=TypeCapteur.rythme)
         ]
+    
+    # Ajout des objets principaux
+    db.session.add_all([medecin1, medecin2, patient, proche, *capteurs])
+    db.session.commit()
 
     donnees = [
         DonneesMedicale(patient_id=2, capteur_id=1, valeur_mesuree=36.8, date_heure_mesure=datetime.now() - timedelta(hours=5)),
@@ -77,7 +81,7 @@ with app.app_context():
     )
 
     # Insertion dans la base
-    db.session.add(medecin)
+    db.session.add_all([*donnees, alerte])
     db.session.commit()
 
-    print("Utilisateurs insérés avec succès")
+    print("Data insérés avec succès")
