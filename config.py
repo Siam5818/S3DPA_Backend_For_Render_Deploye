@@ -73,8 +73,6 @@ class Config:
     #print(f"Backend de S3DPA vient d'être démarré en mode {ENV} sur {PRIMARY_URL}")
     #print(f"Voici l'Url de la documentation Swagger --> {PRIMARY_URL}/apidocs")
 
-
-
 # Configuration spécifique au développement
 class DevelopmentConfig(Config):
     ENV = 'development'
