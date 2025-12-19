@@ -1,0 +1,9 @@
+image: python:3.11.9
+
+stages:
+  - test
+
+check_python:
+  stage: test
+  script:
+    - python --version
