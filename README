@@ -22,7 +22,7 @@ S3DPA_Backend_For_Render_Deploye/
 │   └── utils/            # Fonctions utilitaires
 
 
-git clone https://gitlab.com/sihamoudineanzize/S3DPA_Backend_For_Render_Deploye.git
+git clone https://github.com/Siam5818/S3DPA_Backend_For_Render_Deploye.git
 cd S3DPA_Backend_For_Render_Deploye
 
 pip install -r requirements.txt
