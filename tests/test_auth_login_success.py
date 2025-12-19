@@ -1,6 +1,5 @@
 # Test pour verifier qu'une connexion reussie retourne le token et les informations utilisateur correctes.
-
-from app import create_app
+from app.__init__ import create_app
 
 def test_login_success(monkeypatch):
     app = create_app()
