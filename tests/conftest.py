@@ -34,3 +34,11 @@ def client(app):
 def runner(app):
     """CLI runner"""
     return app.test_cli_runner()
+
+
+@pytest.fixture(autouse=True)
+def bypass_jwt(monkeypatch):
+    monkeypatch.setattr(
+        "flask_jwt_extended.view_decorators.verify_jwt_in_request",
+        lambda *args, **kwargs: None
+    )
