@@ -47,6 +47,8 @@ jobs:
           DB_HOST: localhost
           DB_PORT: 5432
           DB_NAME: testdb
+          MAIL_USERNAME: test
+          MAIL_PASSWORD: test
 
           JWT_SECRET_KEY: test_jwt_secret
           SESSION_SECRET_KEY: test_session_secret
