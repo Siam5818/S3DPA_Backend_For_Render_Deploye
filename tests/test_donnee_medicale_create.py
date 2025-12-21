@@ -16,12 +16,12 @@ def test_create_donnee_success(client, monkeypatch):
     }
 
     monkeypatch.setattr(
-        "app.routes.donnee_medical_route.create_donnee_medicale",
+        "app.routes.donnees_medicales_route.create_donnee_medicale",
         lambda data: fake_donnee
     )
 
     monkeypatch.setattr(
-        "app.routes.donnee_medical_route.serialize_donnee_medicale",
+        "app.routes.donnees_medicales_route.serialize_donnee_medicale",
         lambda d: d
     )
 

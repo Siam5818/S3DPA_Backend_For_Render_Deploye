@@ -3,8 +3,14 @@
 def test_get_donnees_by_patient_not_found(client, monkeypatch):
     """Test que la récupération des données médicales pour un patient inexistant retourne 404"""
     monkeypatch.setattr(
-        "app.routes.donnee_medical_route.get_donnees_by_patient",
+        "app.routes.donnees_medicales_route.get_donnees_by_patient",
         lambda patient_id: []
+    )
+
+    # Simuler JWT valide pour contourner l'authentification
+    monkeypatch.setattr(
+        "flask_jwt_extended.view_decorators.verify_jwt_in_request",
+        lambda *a, **k: setattr(__import__('flask').g, '_jwt_extended_jwt', {'identity': 'test'})
     )
 
     response = client.get("/v1/donnees/patient/99")
@@ -18,8 +24,14 @@ def test_get_stats_by_patient_success(client, monkeypatch):
     ]
 
     monkeypatch.setattr(
-        "app.routes.donnee_medical_route.get_stats_by_patient",
+        "app.routes.donnees_medicales_route.get_stats_by_patient",
         lambda patient_id: fake_stats
+    )
+
+    # Simuler JWT valide pour contourner l'authentification
+    monkeypatch.setattr(
+        "flask_jwt_extended.view_decorators.verify_jwt_in_request",
+        lambda *a, **k: setattr(__import__('flask').g, '_jwt_extended_jwt', {'identity': 'test'})
     )
 
     response = client.get("/v1/donnees/patient/1/stats")

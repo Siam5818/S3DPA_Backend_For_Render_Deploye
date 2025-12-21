@@ -13,13 +13,19 @@ def test_get_all_donnees_success(client, monkeypatch):
     ]
 
     monkeypatch.setattr(
-        "app.routes.donnee_medical_route.get_all_donnees",
+        "app.routes.donnees_medicales_route.get_all_donnees",
         lambda: fake_data
     )
 
     monkeypatch.setattr(
-        "app.routes.donnee_medical_route.serialize_donnee_medicale",
+        "app.routes.donnees_medicales_route.serialize_donnee_medicale",
         lambda d: d
+    )
+
+    # Simuler JWT valide pour contourner l'authentification
+    monkeypatch.setattr(
+        "flask_jwt_extended.view_decorators.verify_jwt_in_request",
+        lambda *a, **k: setattr(__import__('flask').g, '_jwt_extended_jwt', {'identity': 'test'})
     )
 
     response = client.get("/v1/donnees")
