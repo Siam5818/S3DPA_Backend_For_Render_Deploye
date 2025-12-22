@@ -62,13 +62,13 @@ with app.app_context():
         ]
     
     # Ajout des objets principaux
-    db.session.add_all([medecin1, medecin2, patient, proche, *capteurs])
-    db.session.commit()
+    #db.session.add_all([medecin1, medecin2, patient, proche, *capteurs])
+    #db.session.commit()
 
     donnees = [
-        DonneesMedicale(patient_id=3, capteur_id=3, valeur_mesuree=78, date_heure_mesure=datetime.now() - timedelta(hours=5)),
-        DonneesMedicale(patient_id=3, capteur_id=3, valeur_mesuree=110, date_heure_mesure=datetime.now() - timedelta(hours=3)),
-        DonneesMedicale(patient_id=3, capteur_id=3, valeur_mesuree=58, date_heure_mesure=datetime.now() - timedelta(hours=1)),
+        DonneesMedicale(patient_id=6, capteur_id=1, valeur_mesuree=40, date_heure_mesure=datetime.now() - timedelta(hours=5)),
+        DonneesMedicale(patient_id=6, capteur_id=3, valeur_mesuree=58, date_heure_mesure=datetime.now() - timedelta(hours=3)),
+        DonneesMedicale(patient_id=6, capteur_id=3, valeur_mesuree=110, date_heure_mesure=datetime.now() - timedelta(hours=1)),
     ]
 
     alerte = Alerte(

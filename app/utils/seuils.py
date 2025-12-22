@@ -1,20 +1,22 @@
+from app.models.enums import TypeCapteur, TypeAlerte, UrgenceEnum
+
 SEUILS_CAPTEURS = {
-    "temperature": {
+    TypeCapteur.temperature: {
         "min": 36.0,
         "max": 37.5,
-        "niveau_urgence": "critique",
-        "type_alerte": "temperature_anormale"
+        "niveau_urgence": UrgenceEnum.critique,
+        "type_alerte": TypeAlerte.urgence
     },
-    "tension": {
+    TypeCapteur.pression: {
         "min": 90,
         "max": 140,
-        "niveau_urgence": "critique",
-        "type_alerte": "tension_anormale"
+        "niveau_urgence": UrgenceEnum.critique,
+        "type_alerte": TypeAlerte.urgence
     },
-    "glycemie": {
-        "min": 70,
-        "max": 110,
-        "niveau_urgence": "moderee",
-        "type_alerte": "glycemie_anormale"
+    TypeCapteur.rythme: {
+        "min": 60,
+        "max": 100,
+        "niveau_urgence": UrgenceEnum.moyenne,
+        "type_alerte": TypeAlerte.avertissement
     }
 }
