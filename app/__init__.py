@@ -14,7 +14,12 @@ def create_app():
     # Enable CORS for the app
     CORS(
         app,
-        resources={r"/v1/*": {"origins": "http://localhost:4200"}},
+        resources={r"/v1/*": {"origins": [
+            "http://localhost:4200",
+            "http://localhost:8081",
+            "http://localhost:19006",     
+            "https://s3dpa-backend.onrender.com"
+            ]}},
         supports_credentials=True,
         allow_headers=["Content-Type", "Authorization"],
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
