@@ -65,8 +65,15 @@ def create_proche_route():
 @proche_bp.route("/proches", methods=["GET"])
 @swag_from({
     'tags': ['v1 - Proches'],
-    'summary': 'Lister tous les proches',
-    'description': 'Retourne la liste complète des proches enregistrés.',
+    'summary': 'Lister tous les proches (optionnellement filtrer par patient)',
+    'description': 'Retourne la liste des proches. Peut être filtré par patient_id via query parameter.',
+    'parameters': [{
+        'name': 'patient_id',
+        'in': 'query',
+        'type': 'integer',
+        'required': False,
+        'description': 'ID du patient pour filtrer ses proches'
+    }],
     'security': [{'BearerAuth': []}],
     'responses': {
         200: {
@@ -87,7 +94,16 @@ def create_proche_route():
 })
 @jwt_required()
 def get_all_proches_route():
-    proches = get_all_proches()
+    # Récupérer le patient_id depuis les query parameters
+    patient_id = request.args.get("patient_id", None)
+    
+    if patient_id:
+        # Filtrer les proches par patient_id
+        proches = Proche.query.filter_by(patient_id=patient_id).all()
+    else:
+        # Retourner tous les proches
+        proches = get_all_proches()
+    
     result = [serialize_proche(p) for p in proches]
     return jsonify(result), 200
 
