@@ -1,6 +1,7 @@
 from app import create_app
 from app.extension import db, bcrypt
 from app.models import Medecin, Patient, Proche, Capteur, TypeCapteur, DonneesMedicale, Alerte, TypeAlerte, UrgenceEnum
+from app.services.donnee_medical_service import create_donnee_medicale
 from datetime import datetime, timedelta
 
 app = create_app()
@@ -65,23 +66,34 @@ with app.app_context():
     #db.session.add_all([medecin1, medecin2, patient, proche, *capteurs])
     #db.session.commit()
 
-    donnees = [
-        DonneesMedicale(patient_id=6, capteur_id=1, valeur_mesuree=40, date_heure_mesure=datetime.now() - timedelta(hours=5)),
-        DonneesMedicale(patient_id=6, capteur_id=3, valeur_mesuree=58, date_heure_mesure=datetime.now() - timedelta(hours=3)),
-        DonneesMedicale(patient_id=6, capteur_id=3, valeur_mesuree=110, date_heure_mesure=datetime.now() - timedelta(hours=1)),
-    ]
+    # CORRECTION: Utiliser create_donnee_medicale pour déclencher l'analyse
+    # Les données doivent passer par le service pour générer les analyses et alertes
+    
+    # 1. Température anormale (< 36.0) → ALERTE CRITIQUE
+    donnee1 = create_donnee_medicale({
+        "patient_id": 6,
+        "capteur_id": 1,
+        "valeur_mesuree": 35.0,  # ANOMALIE: < 36.0
+        "medecin_id": 1
+    })
+    print(f"✓ Donnée 1 créée: Température={donnee1.valeur_mesuree}°C → Analyse générée + Alerte")
+    
+    # 2. Rythme cardiaque anormal (< 60) → ALERTE MOYENNE
+    donnee2 = create_donnee_medicale({
+        "patient_id": 6,
+        "capteur_id": 3,
+        "valeur_mesuree": 55,  # ANOMALIE: < 60
+        "medecin_id": 1
+    })
+    print(f"✓ Donnée 2 créée: Rythme={donnee2.valeur_mesuree} bpm → Analyse générée + Alerte")
+    
+    # 3. Rythme cardiaque normal (60-100) → NORMAL
+    donnee3 = create_donnee_medicale({
+        "patient_id": 6,
+        "capteur_id": 3,
+        "valeur_mesuree": 80,  # NORMAL: 60-100
+        "medecin_id": 1
+    })
+    print(f"✓ Donnée 3 créée: Rythme={donnee3.valeur_mesuree} bpm → Analyse générée (normal)")
 
-    alerte = Alerte(
-        patient_id=3,
-        medecin_id=1,
-        niveau_urgence=UrgenceEnum.critique,
-        type_alerte=TypeAlerte.urgence,
-        description="Température corporelle anormalement détectée par le capteur.",
-        etat_traitement=False
-    )
-
-    # Insertion dans la base
-    db.session.add_all([*donnees])
-    db.session.commit()
-
-    print("Data insérés avec succès")
+    print("\n Toutes les données ont été insérées avec analyses automatiques et alertes!")

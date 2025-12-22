@@ -17,6 +17,5 @@ SEUILS_CAPTEURS = {
         "min": 60,
         "max": 100,
         "niveau_urgence": UrgenceEnum.moyenne,
-        "type_alerte": TypeAlerte.avertissement
-    }
+        "type_alerte": TypeAlerte.avertissement    }
 }

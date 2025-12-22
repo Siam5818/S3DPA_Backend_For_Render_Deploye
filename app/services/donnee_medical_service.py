@@ -40,7 +40,7 @@ def create_donnee_medicale(data):
     if not patient or not capteur or not medecin:
         raise ValueError("Patient, capteur ou médecin introuvable")
 
-    # 1️⃣ Création de la donnée
+    # Création de la donnée
     donnee = DonneesMedicale(
         patient_id=patient.id,
         capteur_id=capteur.id,
@@ -51,14 +51,14 @@ def create_donnee_medicale(data):
     db.session.add(donnee)
     db.session.flush()  # Génère donnee.id
 
-    # 2️⃣ Analyse automatique
+    # Analyse automatique
     create_analyse(
         patient=patient,
         medecin=medecin,
         donnee=donnee
     )
 
-    # 3️⃣ Commit global (donnée + analyse + alerte)
+    # Commit global (donnée + analyse + alerte)
     db.session.commit()
 
     return donnee

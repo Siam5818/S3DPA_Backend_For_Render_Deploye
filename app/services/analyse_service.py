@@ -1,6 +1,7 @@
 from app import db
-from app.models import Analyseur, Patient, Medecin, DonneesMedicale, Alerte
+from app.models import Analyseur, Alerte, enums
 from app.utils.seuils import SEUILS_CAPTEURS
+
 
 def create_analyse(patient, medecin, donnee):
     """
@@ -9,8 +10,9 @@ def create_analyse(patient, medecin, donnee):
 
     capteur = donnee.capteur
     valeur = donnee.valeur_mesuree
+    type_capteur = capteur.type
 
-    seuil = SEUILS_CAPTEURS.get(capteur.type_capteur)
+    seuil = SEUILS_CAPTEURS.get(type_capteur)
 
     # Valeur par défaut
     resultat = "Analyse non effectuée : seuil non défini pour ce capteur"
