@@ -66,13 +66,13 @@ with app.app_context():
     db.session.commit()
 
     donnees = [
-        DonneesMedicale(patient_id=2, capteur_id=1, valeur_mesuree=36.8, date_heure_mesure=datetime.now() - timedelta(hours=5)),
-        DonneesMedicale(patient_id=2, capteur_id=1, valeur_mesuree=37.1, date_heure_mesure=datetime.now() - timedelta(hours=3)),
-        DonneesMedicale(patient_id=2, capteur_id=1, valeur_mesuree=36.9, date_heure_mesure=datetime.now() - timedelta(hours=1)),
+        DonneesMedicale(patient_id=3, capteur_id=3, valeur_mesuree=78, date_heure_mesure=datetime.now() - timedelta(hours=5)),
+        DonneesMedicale(patient_id=3, capteur_id=3, valeur_mesuree=110, date_heure_mesure=datetime.now() - timedelta(hours=3)),
+        DonneesMedicale(patient_id=3, capteur_id=3, valeur_mesuree=58, date_heure_mesure=datetime.now() - timedelta(hours=1)),
     ]
 
     alerte = Alerte(
-        patient_id=2,
+        patient_id=3,
         medecin_id=1,
         niveau_urgence=UrgenceEnum.critique,
         type_alerte=TypeAlerte.urgence,
@@ -81,7 +81,7 @@ with app.app_context():
     )
 
     # Insertion dans la base
-    db.session.add_all([*donnees, alerte])
+    db.session.add_all([*donnees])
     db.session.commit()
 
     print("Data insérés avec succès")

@@ -9,37 +9,58 @@
 # -------------------------------------------------------------
 
 from app import db
-from app.models.donnees_medicales import DonneesMedicale
-from app.models.patient import Patient
-from app.models.capteur import Capteur
+from app.models import Patient, Medecin, Capteur, DonneesMedicale
 from datetime import datetime
 from sqlalchemy import func
+from app.services.analyse_service import create_analyse
 
 # -------------------------------------------------------------
 # SERVICE : Données Médicales
 # -------------------------------------------------------------
 
 def create_donnee_medicale(data):
-    """Crée et enregistre une nouvelle donnée médicale."""
-    required_fields = ["patient_id", "capteur_id", "valeur_mesuree"]
+    """
+    Création d'une donnée médicale AVEC analyse automatique obligatoire
+    """
+
+    required_fields = [
+        "patient_id",
+        "capteur_id",
+        "valeur_mesuree",
+        "medecin_id"
+    ]
+
     if not all(field in data for field in required_fields):
-        raise ValueError("Certains champs obligatoires sont manquants")
+        raise ValueError("Champs obligatoires manquants")
 
     patient = Patient.query.get(data["patient_id"])
     capteur = Capteur.query.get(data["capteur_id"])
+    medecin = Medecin.query.get(data["medecin_id"])
 
-    if not patient or not capteur:
-        raise ValueError("Patient ou capteur introuvable")
+    if not patient or not capteur or not medecin:
+        raise ValueError("Patient, capteur ou médecin introuvable")
 
+    # 1️⃣ Création de la donnée
     donnee = DonneesMedicale(
-        patient_id=data["patient_id"],
-        capteur_id=data["capteur_id"],
+        patient_id=patient.id,
+        capteur_id=capteur.id,
         valeur_mesuree=data["valeur_mesuree"],
         date_heure_mesure=datetime.utcnow()
     )
 
     db.session.add(donnee)
+    db.session.flush()  # Génère donnee.id
+
+    # 2️⃣ Analyse automatique
+    create_analyse(
+        patient=patient,
+        medecin=medecin,
+        donnee=donnee
+    )
+
+    # 3️⃣ Commit global (donnée + analyse + alerte)
     db.session.commit()
+
     return donnee
 
 
