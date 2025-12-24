@@ -9,7 +9,10 @@
 
 from flask import Blueprint, request, jsonify
 from flasgger import swag_from
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
+import json
+from app.services.auth_service import get_user_by_id
+from app.services.proche_service import get_proche_by_id
 from app.services.donnee_medical_service import (
     create_donnee_medicale,
     get_all_donnees,
@@ -166,6 +169,29 @@ def get_all_donnees_route():
     }
 })
 def get_donnees_by_patient_route(patient_id):
+    # Autorisation : patient lui-même, medecin, ou proche lié
+    identity_raw = get_jwt_identity()
+    try:
+        identity = json.loads(identity_raw)
+    except Exception:
+        identity = {"id": None, "role": None}
+
+    user_role = identity.get("role")
+    user_id = identity.get("id")
+
+    allowed = False
+    if user_role == 'medecin':
+        allowed = True
+    elif user_role == 'patient' and user_id == patient_id:
+        allowed = True
+    elif user_role == 'proche':
+        proche = get_proche_by_id(user_id)
+        if proche and proche.patient_id == patient_id:
+            allowed = True
+
+    if not allowed:
+        return jsonify({"error": "Accès non autorisé"}), 403
+
     donnees = get_donnees_by_patient(patient_id)
     if not donnees:
         return jsonify({"message": "Aucune donnée trouvée"}), 404
@@ -203,6 +229,29 @@ def get_donnees_by_patient_route(patient_id):
     }
 })
 def get_stats_by_patient_route(patient_id):
+    # Autorisation identique à get_donnees_by_patient
+    identity_raw = get_jwt_identity()
+    try:
+        identity = json.loads(identity_raw)
+    except Exception:
+        identity = {"id": None, "role": None}
+
+    user_role = identity.get("role")
+    user_id = identity.get("id")
+
+    allowed = False
+    if user_role == 'medecin':
+        allowed = True
+    elif user_role == 'patient' and user_id == patient_id:
+        allowed = True
+    elif user_role == 'proche':
+        proche = get_proche_by_id(user_id)
+        if proche and proche.patient_id == patient_id:
+            allowed = True
+
+    if not allowed:
+        return jsonify({"error": "Accès non autorisé"}), 403
+
     stats = get_stats_by_patient(patient_id)
     if not stats:
         return jsonify({"message": "Aucune statistique trouvée"}), 404
